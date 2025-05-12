@@ -1,0 +1,4 @@
+./obj_dir
+./verliator
+./*.vcd
+cpu_sim

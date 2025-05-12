@@ -1,7 +1,3 @@
-# armcore
+# Minimal Armv8 cpu
 
-- MOVZ
-- MOVK 
-- LDR 
-- SVC 
 
