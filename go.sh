@@ -1,10 +1,10 @@
 #!/bin/bash
 # Helper file for running the simulator
 
-iverilog -o cpu_sim cpu.v cpu_tb.v
+go=0
+iverilog -o cpu_sim cpu/* && ./cpu_sim && go=1
 
-./cpu_sim
 
-if [[ "$VIZ" -eq 1 ]]; then
+if [[ "$VIZ" -eq 1 && "$go" -eq 1 ]]; then
     surfer wave.vcd
     fi
