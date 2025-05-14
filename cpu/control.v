@@ -35,7 +35,7 @@ module control (
 
   case (opcode_mov)
     7'b1101001: begin //movz 
-
+        RegWrite = 1'b1
 
   end
 

@@ -16,20 +16,23 @@ module cpu (
 
   // Basic ARMv8 PC incrementer (placeholder)
   always @(posedge clk or posedge reset) begin
-      if (reset)begin
+      if (reset) begin
 
         pc <= 0;
-        sp <= INITSP;
+        X<= INITSP;
 
         end
       else if (!halted) begin
-
-        pc <= pc + 4; // Increment PC by 4 (ARMv8 instruction size)
-
+        if (!UncondBranch && !FlagBranch && !ZeroBranch)
+          pc <= pc + 4; // Increment PC by 4 (ARMv8 instruction size)
         end
+        // else begin 
+        //   case ({UncondBranch, ZeroBranch, FlagBranch})
+            
+        // end
     end
 
-control ctrl (
+control control_unit(
     .opcode(opcode),
     .UncondBranch(UncondBranch),
     .FlagBranch(FlagBranch),
@@ -42,6 +45,8 @@ control ctrl (
     .ALUOp(ALUOp),
     .RegWrite(RegWrite)
 );
+
+reg registers
 
 
 endmodule
