@@ -1,7 +1,8 @@
 // control.v
 module control (
-  input [31:0] instuction,
+  input [31:0] instruction, // what we really want is just the opcode buy it is variable length for the different formats for ARM instructions 
 
+  // Control Bits
   output wire UncondBranch,
   output wire FlagBranch,
   output wire ZeroBranch,
@@ -10,17 +11,11 @@ module control (
   output wire MemWrite,
   output wire FlagWrite,
   output wire ALUSrc,
-  output wire ALUOp,
+  output wire [1:0] ALUOp, // this is wide not one bit
   output wire RegWrite
-
 );
 
-  wire [10:0] opcode_r_d = instruction[31:21]; // R-type, D-type, SVC
-  wire [9:0]  opcode_i = instruction[31:22];   // I-type
-  wire [8:0]  opcode_mov = instruction[31:23]; // MOVZ, MOVK
-  wire [7:0]  opcode_cb = instruction[31:24];  // CB-type
-  wire [5:0]  opcode_b = instruction[31:26];   // B-type
-
+// On start
   always @(*) begin 
   UncondBranch = 1'b0;
   FlagBranch = 1'b0;
@@ -32,12 +27,17 @@ module control (
   ALUSrc = 1'b0;
   ALUOp = 2'b00;
   RegWrite = 1'b0;
+  // Setting control bits for each instruction 
+  case instruction[31:21] // we are going to assume no shift (hw) now for simplicity and that all ops are 64 bit mode.
+    11'b11010010100: begin //MOVZ opc without hw
+      RegWrite
+    end
+    11'110101010000: begin // NOP so we just want to do nothing then increment the PC+4
 
-  case (opcode_mov)
-    7'b1101001: begin //movz 
-        RegWrite = 1'b1
+    
+    end
 
-  end
+  endcase
 
 end
 

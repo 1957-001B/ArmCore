@@ -1,6 +1,6 @@
 // instruction_memory.v
 
-module instruction_memory (
+module imem (
 input wire [63:0] address, // reads from PC
 output wire [31:0] instruction // reads from memory the instruction 
 );
