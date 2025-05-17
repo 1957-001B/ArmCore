@@ -1,6 +1,6 @@
 // control.v
 module control (
-  input [31:0] instruction, // what we really want is just the opcode buy it is variable length for the different formats for ARM instructions 
+  input [31:0] instruction,  
 
   // Control Bits
   output wire UncondBranch,
@@ -16,7 +16,9 @@ module control (
 );
 
 // On start
-  always @(*) begin 
+always @(*) begin 
+
+  Reg2Loc = 1'b0
   UncondBranch = 1'b0;
   FlagBranch = 1'b0;
   ZeroBranch = 1'b0;
@@ -27,17 +29,20 @@ module control (
   ALUSrc = 1'b0;
   ALUOp = 2'b00;
   RegWrite = 1'b0;
-  // Setting control bits for each instruction 
-  case instruction[31:21] // we are going to assume no shift (hw) now for simplicity and that all ops are 64 bit mode.
-    11'b11010010100: begin //MOVZ opc without hw
-      RegWrite
-    end
-    11'110101010000: begin // NOP so we just want to do nothing then increment the PC+4
 
-    
-    end
-
-  endcase
+  if (instruction[31:24] == 8'b10110100) begin // CBZ CBZ <Xt>, <label>
+    Reg2Loc = 1'b1;
+    ZeroBranch=1'b1;
+    ALUOp = 2'b01;
+  end else if (instruction[31:26] == 6'b000101) begin //B B <label>
+    UncondBranch = 1'b1;
+  end else if (instruction[31:21] == 9'b110100101) begin //MOVZ MOVZ <Xd>, #<imm>{, LSL #<shift>}
+    RegWrite = 1'b1;
+  end else if (instruction[31:24] == 8'b11101011) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
+    ALUOp = 2'b01;
+  end else if (instruction[31:23] == 9'b110100010) begin // SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
+    ALUOp = 2'b10;
+  end
 
 end
 

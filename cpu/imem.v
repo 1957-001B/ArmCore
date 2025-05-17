@@ -1,7 +1,7 @@
 // instruction_memory.v
 
 module imem (
-input wire [63:0] address, // reads from PC
+input wire [63:0] pc, // reads from PC
 output wire [31:0] instruction // reads from memory the instruction 
 );
   localparam MEMSIZE = 1024; // 1024 Instructions ~ 1024*4 = 4Kib
@@ -27,6 +27,6 @@ initial
 
   end
 
-  assign instruction = i_mem[address[11:2]]; //right shifted twice to align with the 4 bit instuctions (i.e divide by 4)
+  assign instruction = i_mem[pc[11:2]]; //right shifted twice to align with the 4 bit instuctions (i.e divide by 4)
 
 endmodule

@@ -2,3 +2,4 @@
 ./verliator
 ./*.vcd
 cpu_sim
+a.out
