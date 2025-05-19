@@ -1,11 +1,11 @@
 // alu.v
 
 module alu (
-    output zero,
-    input [63:0] A,
-    input [63:0] B,
-    input [3:0] alu_op,
-    output reg [63:0] result 
+  output zero,
+  input [63:0] A,
+  input [63:0] B,
+  input [3:0] alu_op,
+  output reg [63:0] result 
 );
 
 localparam OP_AND    = 4'b0000;

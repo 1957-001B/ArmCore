@@ -1,12 +1,11 @@
-module alu_control (
-    input [31:0] instruction,
-    input wire ALUread,
-    input [1:0] ALUOp, // ALU control will only send a signal when the ALUOp flag is set 
-    output [3:0] alu_op
+module pad (
+  input [31:0] instruction,
+  output [63:0] padded_inst
 )
-
-// decode opcode and send a signal to the alu if ALUOp singal is enabled
 always @(*) begin
+  if instruction[31:0]
+
+
 case (ALUOp)
 
   2'b01: begin // branch operations 
@@ -19,17 +18,12 @@ case (ALUOp)
   if (instruction[31:21] == 9'b110100101) begin //MOVZ MOVZ <Xd>, #<imm>{, LSL #<shift>}
     alu_op = 4'b0001;
   end else if (instruction[31:24] == 8'b11101011) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
-    alu_op = 4'b0110;
   end else if (instruction[31:23] == 9'b110100010) begin // SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
-    alu_op = 4'b0110;
-  end else if (instruction[31:23] == 9'b100100001) begin // ADDI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
-    alu_op = 4'b0010;
   end
+
   end
-  default: 4'b0000;
+  default: 2'b00;
 
 endcase
-
 end
-
 endmodule

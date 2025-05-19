@@ -9,10 +9,36 @@ module cpu (
 
 localparam INITSP =  1000; // set by the bootloader
 localparam INITPC =  64'h0000000000000000;
+// Wires definitions
 wire [31:0] instruction;
+//Control Unit
+wire Reg2Loc;
+wire UncondBranch;
+wire FlagBranch;
+wire ZeroBranch;
+wire MemRead;
+wire MemToReg;
+wire MemWrite;
+wire FlagWrite;
+wire ALUSrc;
+wire [1:0] ALUOp;
+wire RegWrite;
+// Register File 
+wire [4:0] Read_register_1;
+wire [4:0] Read_register_2;
+assign Read_register_1 = instruction[9:5];
+assign Read_register_2 = Reg2Loc ? instruction[20:16] : instruction[4:0];
+wire Write_register;
+wire [63:0] Write_d;
+//Alu
+wire alu_zero;
+wire [3:0] alu_op;
+wire [63:0] pc_norm, pc_jump;
+wire mod_flags; //not sure if I will input flag branches
 
+// Output the current instruction at the PC.
 imem instruction_memory(
-  .address(pc),
+  .pc(pc),
   .instruction(instruction)
 );
 
@@ -41,29 +67,25 @@ reg_file registers(
 );
 
 alu alu(
-  .zero()
+  .zero(alu_zero)
   .input1(Read_data_1)
-  .input2()
+  .input2(alu_mux)
 );
 
+//  PC logic
+wire [63:0] pc_norm, pc_jump;
+assign pc_select = UncondBranch | FlagBranch | (ZeroBranch && alu_zero)
+assign pc_mux = pc_select ? pc_norm : pc_jump
 
-// Basic ARMv8 PC incrementer (placeholder)
 always @(posedge clk or posedge reset) begin
     if (reset) begin
-      // Initialize cpu
-      pc<= INITPC;
+      // Initialize 
+      pc <= INITPC;
       X[31] <= INITSP;
 
+      end else if (!halted) begin  
+        pc_mux;
       end
-    else if (!halted) begin
-      if (!UncondBranch && !FlagBranch && !ZeroBranch)
-
-        pc<= pc + 4; // Increment PC by 4 (ARMv8 instruction size)
-      end
-      // else begin 
-      //   case ({UncondBranch, ZeroBranch, FlagBranch})
-          
-      // end
-  end
+    end 
 
 endmodule
