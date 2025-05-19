@@ -6,9 +6,15 @@ module cpu (
     output reg [63:0] pc,
     output wire halted
   );
-
- // set by the bootloader
-localparam INITPC =  64'h0000000000000000;
+//Opcodes defined here unshifted for simplicity 
+localparam CBZ_OP  = 8'b10110100;    // CBZ: Bits 31:24
+localparam MOVZ_OP = 9'b110100101;   // MOVZ: Bits 31:21 (hw = 00, no shift)
+localparam CMP_OP  = 11'b11101011001; // CMP (SUBS reg): Bits 31:21 (sh = 0)
+localparam SUB_OP  = 9'b110100010;   // SUB (imm): Bits 31:23 (sf = 1, S = 0)
+localparam ADD_OP  = 9'b100100010;   // ADD (imm): Bits 31:23 (sf = 1, S = 0)
+localparam B_OP    = 6'b000101;      // B: Bits 31:26
+// set by the bootloader
+localparam INITPC =  64'h0;
 // Wires definitions
 wire [31:0] instruction;
 // Sign Extend / Pad
