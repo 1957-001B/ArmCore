@@ -12,6 +12,7 @@ module reg_file(
 );
 
 reg [63:0] X [31:0]; // 64 bit registers * 32 (X0-X31)
+
 always @(*) begin
   if (Read_register_1 == 5'd31) begin
     if (UseSP)

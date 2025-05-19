@@ -1,8 +1,7 @@
 module alu_control (
     input [31:0] instruction,
-    input wire ALUread,
     input [1:0] ALUOp, // ALU control will only send a signal when the ALUOp flag is set 
-    output [3:0] alu_op
+    output reg [3:0] alu_op
 )
 
 // decode opcode and send a signal to the alu if ALUOp singal is enabled

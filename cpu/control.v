@@ -3,6 +3,7 @@ module control (
   input [31:0] instruction,  
 
   // Control Bits
+  output wire Reg2Loc,
   output wire UncondBranch,
   output wire FlagBranch,
   output wire ZeroBranch,
