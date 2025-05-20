@@ -1,5 +1,5 @@
 // alu.v
-
+`include "params.vh"
 module alu (
   output zero,
   input [63:0] A,

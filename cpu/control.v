@@ -1,26 +1,28 @@
 // control.v
+`include "params.vh"
 module control (
   input [31:0] instruction,  
 
   // Control Bits
-  output wire Reg2Loc,
-  output wire UncondBranch,
-  output wire FlagBranch,
-  output wire ZeroBranch,
-  output wire MemRead,
-  output wire MemToReg,
-  output wire MemWrite,
-  output wire FlagWrite,
-  output wire ALUSrc,
-  output wire [1:0] ALUOp, // this is wide not one bit
-  output wire RegWrite
+  output reg Reg2Loc,
+  output reg UncondBranch,
+  output reg FlagBranch,
+  output reg ZeroBranch,
+  output reg MemRead,
+  output reg MemToReg,
+  output reg MemWrite,
+  output reg FlagWrite,
+  output reg ALUSrc,
+  output reg [1:0] ALUOp, // this is wide not one bit
+  output reg RegWrite,
+  output reg UseSP
 );
 
 
 // On start
 always @(*) begin 
 
-  Reg2Loc = 1'b0
+  Reg2Loc = 1'b0;
   UncondBranch = 1'b0;
   FlagBranch = 1'b0;
   ZeroBranch = 1'b0;
@@ -40,10 +42,11 @@ always @(*) begin
     UncondBranch = 1'b1;
   end else if (instruction[31:21] == MOVZ_OP) begin //MOVZ MOVZ <Xd>, #<imm>{, LSL #<shift>}
     RegWrite = 1'b1;
-  end else if (instruction[31:24] == CMP_OP) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
+  end else if (instruction[31:21] == CMP_OP) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
     ALUOp = 2'b01;
   end else if (instruction[31:23] == SUB_OP) begin // SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
+    UseSP = 1'b1;
   end else if (instruction[31:23] == ADD_OP) begin // ADD <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
 

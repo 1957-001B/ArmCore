@@ -1,22 +1,22 @@
 // registers.v
 module reg_file(
   input clk,
+  input reset,
   input wire RegWrite,
   input [4:0] Read_register_1,
   input [4:0] Read_register_2,
   input [4:0] Write_register,
   input [63:0] Write_d,
-  input wire Use_SP
-  output [63:0] Read_data_1,
-  output [63:0] Read_data_2
+  input wire UseSP,
+  output reg [63:0] Read_data_1,
+  output reg [63:0] Read_data_2
 );
-
-reg [63:0] X [31:0]; // 64 bit registers * 32 (X0-X31)
+output reg [63:0] X [31:0]; // 64 bit registers * 32 (X0-X31)
 
 always @(*) begin
   if (Read_register_1 == 5'd31) begin
     if (UseSP)
-      Read_data_1 = SP;   // Use SP if instruction specifies it
+      Read_data_1 = X[31];   // Use SP if instruction specifies it
     else
       Read_data_1 = 64'b0; // Otherwise, XZR (0)
   end
@@ -27,7 +27,7 @@ end
 always @(*) begin
   if (Read_register_2 == 5'd31) begin
     if (UseSP)
-      Read_data_2 = SP;   // Use SP if instruction specifies it
+      Read_data_2 = X[31];   // Use SP if instruction specifies it
     else
       Read_data_2 = 64'b0; // Otherwise, XZR (0)
   end

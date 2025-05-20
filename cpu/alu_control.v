@@ -1,8 +1,9 @@
+`include "params.vh"
 module alu_control (
     input [31:0] instruction,
     input [1:0] ALUOp, // ALU control will only send a signal when the ALUOp flag is set 
     output reg [3:0] alu_op
-)
+);
 
 // decode opcode and send a signal to the alu if ALUOp singal is enabled
 always @(*) begin
@@ -25,7 +26,7 @@ case (ALUOp)
     alu_op = 4'b0010;
   end
   end
-  default: 4'b0000;
+  default: alu_op = 4'b0000;
 
 endcase
 

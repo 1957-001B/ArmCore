@@ -1,5 +1,5 @@
 // instruction_memory.v
-
+`include "params.vh"
 module imem (
 input wire [63:0] pc, // reads from PC
 output wire [31:0] instruction // reads from memory the instruction 

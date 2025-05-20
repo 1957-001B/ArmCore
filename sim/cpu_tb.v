@@ -7,14 +7,15 @@ module cpu_tb;
     reg reset;
     // Outputs from CPU
     wire [63:0] pc;
-    wire [63:0] sp;
     wire [9:0] opcode;
-
+    wire halted;
+    assign halted = 0;
     // Instantiate CPU
     cpu uut (
         .clk(clk),
         .reset(reset),
-        .pc(pc)
+        .pc(pc),
+        .halted(halted)
     );
 
     // Clock generation
@@ -31,7 +32,7 @@ module cpu_tb;
         $dumpvars(0, cpu_tb);
 
         // Apply reset
-        #20 reset = 0; // Release reset after 20ns
+        #10 reset = 0; // Release reset after 20ns
 
         // Run for a few cycles
         #100;
@@ -42,5 +43,5 @@ module cpu_tb;
 
     // Monitor outputs
     initial
-        $monitor("Time=%0t clk=%b reset=%b pc=%h sp=%h", $time, clk, reset, pc, sp);
+        $monitor("Time=%0t clk=%b reset=%b pc=%h ", $time, clk, reset, pc);
 endmodule
