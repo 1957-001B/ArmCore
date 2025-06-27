@@ -1,3 +1,4 @@
+`timescale 10ns/1ns
 `include "params.vh"
 module alu_control (
     input [31:0] instruction,

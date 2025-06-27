@@ -1,5 +1,7 @@
 // control.v
+`timescale 10ns/1ns
 `include "params.vh"
+
 module control (
   input [31:0] instruction,  
 
@@ -13,13 +15,12 @@ module control (
   output reg MemWrite,
   output reg FlagWrite,
   output reg ALUSrc,
-  output reg [1:0] ALUOp, // this is wide not one bit
+  output reg [1:0] ALUOp, 
   output reg RegWrite,
   output reg UseSP
 );
 
-
-// On start
+// On init
 always @(*) begin 
 
   Reg2Loc = 1'b0;
@@ -33,22 +34,24 @@ always @(*) begin
   ALUSrc = 1'b0;
   ALUOp = 2'b00;
   RegWrite = 1'b0;
+  UseSP = 1'b0;
 
   if (instruction[31:24] == CBZ_OP) begin // CBZ CBZ <Xt>, <label>
     Reg2Loc = 1'b1;
     ZeroBranch=1'b1;
     ALUOp = 2'b01;
-  end else if (instruction[31:26] == B_OP) begin //B B <label>
+  end else if (instruction[31:26] == B_OP) begin //B <label>
     UncondBranch = 1'b1;
-  end else if (instruction[31:21] == MOVZ_OP) begin //MOVZ MOVZ <Xd>, #<imm>{, LSL #<shift>}
+  end else if (instruction[31:21] == MOVZ_OP) begin //MOVZ <Xd>, #<imm>{, LSL #<shift>}
     RegWrite = 1'b1;
-  end else if (instruction[31:21] == CMP_OP) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
+  end else if (instruction[31:21] == CMP_OP) begin //CMP <Xn>, <Xm>{, <shift> #<amount>}
     ALUOp = 2'b01;
-  end else if (instruction[31:23] == SUB_OP) begin // SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
+  end else if (instruction[31:23] == SUB_OP) begin //SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
     UseSP = 1'b1;
-  end else if (instruction[31:23] == ADD_OP) begin // ADD <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
+  end else if (instruction[31:23] == ADD_OP) begin //ADD <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
+    UseSP = 1'b1;
 
   end
 end

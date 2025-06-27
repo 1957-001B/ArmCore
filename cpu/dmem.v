@@ -18,7 +18,7 @@ always @(posedge clk) begin
   end
 end
 
-always @(*) begin 
+always @(posedge clk) begin 
   if (MemRead) begin 
     Read_d = d_mem[address[11:2]];
   end else begin

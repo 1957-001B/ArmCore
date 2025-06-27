@@ -1,5 +1,7 @@
 // cpu.v
+`timescale 10ns/1ns
 `include "params.vh"
+
 module cpu (
     input clk,
     input reset,
@@ -10,6 +12,7 @@ module cpu (
 // set by the bootloader
 localparam INITPC =  64'h0;
 localparam INITSP = 1000;
+assign halted = 0;
 
 // Wires definitions
 // Instruction Memory
@@ -41,6 +44,7 @@ wire [4:0] Read_register_2;
 assign Read_register_1 = instruction[9:5];
 assign Read_register_2 = Reg2Loc ? instruction[20:16] : instruction[4:0];
 wire [4:0] Write_register;
+assign Write_register = instruction[4:0];
 wire [63:0] Write_d;
 wire [63:0] alu_result;
 assign Write_d = MemToReg ? alu_result : Read_d;
@@ -59,7 +63,8 @@ wire [3:0] alu_op;
 // Output the current instruction at the PC.
 imem instruction_memory(
   .pc(pc),
-  .instruction(instruction)
+  .instruction(instruction),
+  .reset(reset)
 );
 
 dmem data_memory(
@@ -72,6 +77,7 @@ dmem data_memory(
 
 control control_unit(
   .instruction(instruction),
+  .Reg2Loc(Reg2Loc),
   .UncondBranch(UncondBranch),
   .FlagBranch(FlagBranch),
   .ZeroBranch(ZeroBranch),
@@ -122,9 +128,9 @@ wire [63:0] pc_norm, pc_jump, pc_mux;
 wire pc_select;
 
 assign pc_norm = pc + 4;
-assign pc_jump = pc + 4;
+assign pc_jump = pc + (padded_imm << 2);
 assign pc_select = UncondBranch | FlagBranch | (ZeroBranch & alu_zero);
-assign pc_mux = pc_select ? pc_norm : pc_jump ;
+assign pc_mux = pc_select ? pc_norm | pc_jump;
 
 
 always @(posedge clk or posedge reset) begin

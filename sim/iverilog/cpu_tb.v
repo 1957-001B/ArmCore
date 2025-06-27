@@ -22,20 +22,18 @@ module cpu_tb;
     always #5 clk = ~clk; // 100 MHz clock (10ns period)
 
     // Test stimulus
-    initial begin
-        // Initialize signals
-        clk = 0;
-        reset = 1;
 
-        // Dump waveform for debugging
-        $dumpfile("wave.vcd");
+    reset = 1;
+    initial begin
+        $dumpfile("./debug/cpu.vcd");
         $dumpvars(0, cpu_tb);
 
-        // Apply reset
-        #10 reset = 0; // Release reset after 20ns
+        clk = 0;
+
+        reset = 0;
 
         // Run for a few cycles
-        #100;
+        #50;
 
         // Finish simulation
         $finish;
