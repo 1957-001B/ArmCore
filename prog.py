@@ -8,10 +8,9 @@ TARGET_FILE = os.path.join(DEBUG_DIR, "cpu_test.s")
 OUTPUT_FILE = os.path.join(DEBUG_DIR, "generated.bin")
 
 Contents = bytes
+instructions = [bytes]
 
-FILE_HEADER_TEMPLATE= '''
-`ifndef INSTRUCTIONS_VH
-`define INSTRUCTIONS_VH
+FILE_HEADER_TEMPLATE= '''`ifndef INSTRUCTIONS_VH\n`define INSTRUCTIONS_VH\n
 '''
 
 def r(arg):
@@ -34,7 +33,7 @@ def test():
         print(f"Error: {generated_file} not found after assembly.")
         return
     
-    os.makedirs(DEBUG_DIR, exist_ok=True)  # Ensure the debug directory exists
+    os.makedirs(DEBUG_DIR, exist_ok=True)  
     dest_path = os.path.join(DEBUG_DIR, generated_file)
     shutil.move(generated_file, dest_path)
     print(f"Moved {generated_file} to {dest_path}")
@@ -43,17 +42,17 @@ def test():
         content = g.read()
         instruction_n = len(content) // 4  # Number of 32-bit instructions
         instructions = [content[i:i+4] for i in range(0, len(content), 4)]
-        print(instructions)
-        instruction_n= len(instructions)
+        instructions = [i for i in instructions if i != b'\x00\x00\x00\x00']
 
-    with open('instructions.vh', 'w', encoding='utf8') as instructions:
-        instructions.write(FILE_HEADER_TEMPLATE)
-        instructions.write(f"DEFINE INSTRUCTION_N = {instruction_n};\n")
+    with open('instructions.vh', 'w', encoding='utf8') as inst:
+        inst.write(FILE_HEADER_TEMPLATE)
+        inst.write(f"`define INSTRUCTION_N = {instruction_n};\n")
 
-        for i in enumerate(content):
-            print(i[0])
-            instructions.write(f"instruction [{i[0]}] = 32'h{hex(i[1])};\n")
+        for i, instr in enumerate(instructions):
+            value = int.from_bytes(instr, 'little')
+            print(i)
+            inst.write(f"instruction [{i}] = 32'h{value:08x};\n")
 
-        instructions.write("endif\n")
+        inst.write("endif\n")
 
 test()
