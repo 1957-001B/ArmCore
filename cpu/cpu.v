@@ -1,5 +1,4 @@
-// cpu.v
-`timescale 10ns/1ns
+// cpu.v `timescale 10ns/1ns
 `include "params.vh"
 
 module cpu (
@@ -12,6 +11,7 @@ module cpu (
 // set by the bootloader
 localparam INITPC =  64'h0;
 localparam INITSP = 1000;
+
 assign halted = 0;
 
 // Wires definitions
@@ -130,8 +130,7 @@ wire pc_select;
 assign pc_norm = pc + 4;
 assign pc_jump = pc + (padded_imm << 2);
 assign pc_select = UncondBranch | FlagBranch | (ZeroBranch & alu_zero);
-assign pc_mux = pc_select ? pc_norm | pc_jump;
-
+assign pc_mux = pc_select ? pc_jump : pc_norm;
 
 always @(posedge clk or posedge reset) begin
     if (reset) begin
