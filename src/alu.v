@@ -1,4 +1,5 @@
 // alu.v
+`timescale 1ns/1ps
 `include "params.vh"
 module alu (
   output zero,
@@ -29,4 +30,3 @@ end
 assign zero = (result == 64'b0) ? 1'b1 : 1'b0;
 
 endmodule
-

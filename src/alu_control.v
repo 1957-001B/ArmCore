@@ -1,3 +1,4 @@
+// alu_control.v
 `timescale 10ns/1ns
 `include "params.vh"
 module alu_control (
@@ -17,9 +18,9 @@ case (ALUOp)
   end
 
   2'b10: begin 
-  if (instruction[31:21] == MOVZ_OP) begin //MOVZ MOVZ <Xd>, #<imm>{, LSL #<shift>}
+  if (instruction[31:23] == MOVZ_OP) begin //MOVZ MOVZ <Xd>, #<imm>{, LSL #<shift>}
     alu_op = 4'b0001;
-  end else if (instruction[31:24] == CMP_OP) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
+  end else if (instruction[31:21] == CMP_OP) begin //CMP CMP <Xn>, <Xm>{, <shift> #<amount>}
     alu_op = 4'b0110;
   end else if (instruction[31:23] == SUB_OP) begin // SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     alu_op = 4'b0110;

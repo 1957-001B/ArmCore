@@ -11,4 +11,5 @@ __pycache__
 ./obj_dir/
 ./verilator/
 ./bin/
+./vscode
 a.out

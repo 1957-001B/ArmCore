@@ -1,4 +1,5 @@
-// cpu.v `timescale 10ns/1ns
+// cpu.v 
+`timescale 10ns/1ns
 `include "params.vh"
 
 module cpu (
@@ -8,13 +9,12 @@ module cpu (
     output wire halted
   );
 
-// set by the bootloader
+// Will be set by the bootloader
 localparam INITPC =  64'h0;
-localparam INITSP = 1000;
+// localparam INITSP = 1000;
 
 assign halted = 0;
 
-// Wires definitions
 // Instruction Memory
 wire [31:0] instruction;
 
@@ -36,7 +36,8 @@ wire RegWrite;
 wire UseSP;
 
 // Data Memory
-wire [63:0] Read_d;
+wire [63:0] Read_mem_d;
+wire [63:0] Write_mem_d;
 
 // Register File 
 wire [4:0] Read_register_1;
@@ -47,13 +48,14 @@ wire [4:0] Write_register;
 assign Write_register = instruction[4:0];
 wire [63:0] Write_d;
 wire [63:0] alu_result;
-assign Write_d = MemToReg ? alu_result : Read_d;
+assign Write_d = MemToReg ? alu_result : Read_mem_d;
 wire [63:0] Read_data_1;
 wire [63:0] Read_data_2;
 
 //Alu
 wire alu_zero;
 wire mod_flags; //not sure if I will input flag branches
+wire N, Z, C, V;
 wire [63:0] alu_mux;
 assign alu_mux = ALUSrc ? Read_data_2 : padded_imm;
 
@@ -72,7 +74,8 @@ dmem data_memory(
   .address(alu_result),
   .MemWrite(MemWrite),
   .MemRead(MemRead),
-  .Read_d(Read_d)
+  .Read_d(Read_mem_d),
+  .Write_d(Write_mem_d)
 );
 
 control control_unit(

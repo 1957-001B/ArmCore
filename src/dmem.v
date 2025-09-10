@@ -1,4 +1,5 @@
 //dmem.v
+`timescale 1ns/1ps
 `include "params.vh"
 module dmem (
     input clk,

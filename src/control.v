@@ -42,7 +42,7 @@ always @(*) begin
     ALUOp = 2'b01;
   end else if (instruction[31:26] == B_OP) begin //B <label>
     UncondBranch = 1'b1;
-  end else if (instruction[31:21] == MOVZ_OP) begin //MOVZ <Xd>, #<imm>{, LSL #<shift>}
+  end else if (instruction[31:23] == MOVZ_OP) begin //MOVZ <Xd>, #<imm>{, LSL #<shift>}
     RegWrite = 1'b1;
   end else if (instruction[31:21] == CMP_OP) begin //CMP <Xn>, <Xm>{, <shift> #<amount>}
     ALUOp = 2'b01;
