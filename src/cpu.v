@@ -126,6 +126,15 @@ alu alu(
   .result(alu_result)
 );
 
+apsr apsr(
+    .result(alu_result),
+    .flagWrite(FlagWrite),
+    .N(N),
+    .Z(Z),
+    .C(C),
+    .V(V)
+);
+
 //  PC logic
 wire [63:0] pc_norm, pc_jump, pc_mux;
 wire pc_select;

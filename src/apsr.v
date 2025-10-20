@@ -3,12 +3,13 @@
 `include "params.vh"
 
 module apsr (
-    input FlagWrite,
-    input [63:0] Result
+
+    input [63:0] result,
+    input flagWrite,
     output reg N, Z, C,V
 );
 
-always @(*) begin 
-    N = 0; Z = 0; C = 0; V = 0;
-end
+// always @(*) begin 
+//     N = 0; Z = 0; C = 0; V = 0;
+// end
 endmodule

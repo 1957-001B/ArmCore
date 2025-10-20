@@ -13,3 +13,4 @@ __pycache__
 ./bin/
 ./vscode
 a.out
+obj_dir/
