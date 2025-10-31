@@ -2,7 +2,7 @@
 `timescale 1ns/1ps
 `include "params.vh"
 module alu (
-  output zero,
+  output wire zero,
   input [63:0] A,
   input [63:0] B,
   input [3:0] alu_op,

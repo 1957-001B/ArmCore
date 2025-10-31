@@ -28,11 +28,12 @@ wire ZeroBranch;
 wire MemRead;
 wire MemToReg;
 wire MemWrite;
-wire FlagWrite;
+// wire FlagWrite;
 wire ALUSrc;
 wire [1:0] ALUOp;
 wire RegWrite;
 wire UseSP;
+reg req_halt;
 
 // Data Memory
 wire [63:0] Read_mem_d;
@@ -58,9 +59,16 @@ wire [63:0] Read_data_1;
 wire [63:0] Read_data_2;
 
 // APSR
-wire N, Z, C, V;
+// wire N, Z, C, V;
 // Alu
 wire alu_zero;
+wire zero;
+
+wire [63:0] address;
+wire [63:0] A;
+wire [63:0] B;
+wire [63:0] result;
+
 wire mod_flags; //not sure if I will input flag branches
 wire [63:0] alu_mux;
 assign alu_mux = ALUSrc ? Read_data_2 : padded_imm;
@@ -79,21 +87,39 @@ control u_control (
     .MemRead         (MemRead),
     .MemToReg        (MemToReg),
     .MemWrite        (MemWrite),
-    .FlagWrite       (FlagWrite),
+    // .FlagWrite       (FlagWrite),
     .ALUSrc          (ALUSrc),
     .ALUOp           (ALUOp),
     .RegWrite        (RegWrite),
-    .UseSP           (UseSP)
+    .UseSP           (UseSP),
+    .req_halt        (req_halt)
+);
+imem u_imem (
+    .pc             (pc),
+    // reads from PC
+    .instruction    (instruction),
+    // reads from memory the instruction 
+    .reset          (reset)
 );
 
-apsr u_apsr (
-    .result       (result),
-    .flagWrite    (flagWrite),
-    .N            (N),
-    .Z            (Z),
-    .C            (C),
-    .V            (V)
+dmem u_dmem (
+    .clk         (clk),
+    .address     (address),
+    .MemWrite    (MemWrite),
+    .MemRead     (MemRead),
+    .Write_d     (Write_mem_d),
+    .Read_d      (Read_mem_d)
 );
+
+// probably outside the current scope of the project
+// apsr u_apsr (
+//     .result       (result),
+//     .FlagWrite    (FlagWrite),
+//     .N            (N),
+//     .Z            (Z),
+//     .C            (C),
+//     .V            (V)
+// );
 
 alu u_alu (
     .zero      (zero),
@@ -111,8 +137,22 @@ alu_control u_alu_control (
 
 pad u_pad (
     .instruction    (instruction),
-    .padded_inst    (padded_inst)
+    .padded_imm (padded_imm)
 );
+
+reg_file u_reg_file (
+    .clk                (clk),
+    .reset              (reset),
+    .RegWrite           (RegWrite),
+    .Read_register_1    (Read_register_1),
+    .Read_register_2    (Read_register_2),
+    .Write_register     (Write_register),
+    .Write_d            (Write_d),
+    .UseSP              (UseSP),
+    .Read_data_1        (Read_data_1),
+    .Read_data_2        (Read_data_2)
+);
+
 
 
 //  PC logic
@@ -120,23 +160,22 @@ wire [63:0] pc_norm, pc_jump, pc_mux;
 wire pc_select;
 
 assign pc_norm = pc + 4;
-assign pc_jump = pc + (padded_imm << 2);
-assign pc_select = UncondBranch | FlagBranch | (ZeroBranch & alu_zero);
+assign pc_jump = pc + (padded_imm << 2); // padded_imm LSL 2
+assign pc_select = UncondBranch | FlagBranch | (ZeroBranch & alu_zero); // If any branches then pc_mux is set to jump
 assign pc_mux = pc_select ? pc_jump : pc_norm;
 
-// PC and halt logic
 always @(posedge clk or posedge reset) begin
     if (reset) begin
       // Reset signal driven by tb 
       pc <= INITPC;
-      halted <= 1b'0;
+      halted <= 1'b0;
     end else if (halted) begin  
       pc <= pc;
     end else if (test_halt) begin
-    // Halt when test_halted is high
+    // Halt when test_halted is high this is a temporary hold triggered by the tb
       pc <= pc;
     end else if (req_halt) begin 
-      halted <= 1b'1;
+      halted <= 1'b1;
       pc <= pc;
     end else begin
       // Normal Operation

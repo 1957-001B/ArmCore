@@ -6,4 +6,5 @@ localparam CMP_OP  = 11'b11101011001;
 localparam SUB_OP  = 9'b110100010;
 localparam ADD_OP  = 9'b100100010;
 localparam B_OP    = 6'b000101;
+localparam HLT_OP     = 8'hE1;
 `endif

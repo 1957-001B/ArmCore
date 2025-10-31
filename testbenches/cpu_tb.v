@@ -7,6 +7,7 @@ module cpu_tb;
     logic reset;
     logic [63:0] pc;
     logic halted;
+    logic test_halt;
 
     // Internal signals for monitoring
     // wire [31:0] instruction;
@@ -21,7 +22,8 @@ module cpu_tb;
         .clk(clk),
         .reset(reset),
         .pc(pc),
-        .halted(halted)
+        .halted(halted),
+        .test_halt(test_halt)
     );
 
     // Clock generation: 100MHz (10ns period)
@@ -39,6 +41,7 @@ module cpu_tb;
         // Reset sequence
         reset = 1;
         #20 reset = 0;
+        test_halt = 0;
 
         // Run simulation for 200 cycles
         repeat (200) @(posedge clk);

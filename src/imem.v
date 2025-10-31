@@ -20,9 +20,10 @@ initial begin
     i_mem[4] = 32'hd2800028;
     i_mem[5] = 32'hd2800000;
     i_mem[6] = 32'hd4000001;
+    i_mem[7] = 32'hE1000070;   // HLT #0 
 
     for (integer i = INSTRUCTION_N; i < MEMSIZE; i = i+1) begin
-      i_mem[i] = 32'hd540643f;
+      i_mem[i] = 32'hd540643f; // NOP
     end
 
   end

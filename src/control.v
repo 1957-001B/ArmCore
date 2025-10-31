@@ -13,11 +13,12 @@ module control (
   output reg MemRead,
   output reg MemToReg,
   output reg MemWrite,
-  output reg FlagWrite,
+  // output reg FlagWrite,
   output reg ALUSrc,
   output reg [1:0] ALUOp, 
   output reg RegWrite,
-  output reg UseSP
+  output reg UseSP,
+  output reg req_halt
 );
 
 // On init
@@ -30,13 +31,16 @@ always @(*) begin
   MemRead = 1'b0;
   MemToReg = 1'b0;
   MemWrite = 1'b0;
-  FlagWrite = 1'b0;
+  // FlagWrite = 1'b0;
   ALUSrc = 1'b0;
   ALUOp = 2'b00;
   RegWrite = 1'b0;
   UseSP = 1'b0;
+  req_halt = 1'b0;
 
-  if (instruction[31:24] == CBZ_OP) begin // CBZ CBZ <Xt>, <label>
+if (instruction [31:24] == HLT_OP) begin
+  req_halt = 1'b1;
+end else if (instruction[31:24] == CBZ_OP) begin // CBZ CBZ <Xt>, <label>
     Reg2Loc = 1'b1;
     ZeroBranch=1'b1;
     ALUOp = 2'b01;
@@ -44,15 +48,14 @@ always @(*) begin
     UncondBranch = 1'b1;
   end else if (instruction[31:23] == MOVZ_OP) begin //MOVZ <Xd>, #<imm>{, LSL #<shift>}
     RegWrite = 1'b1;
-  end else if (instruction[31:21] == CMP_OP) begin //CMP <Xn>, <Xm>{, <shift> #<amount>}
-    ALUOp = 2'b01;
   end else if (instruction[31:23] == SUB_OP) begin //SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
     UseSP = 1'b1;
   end else if (instruction[31:23] == ADD_OP) begin //ADD <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
     UseSP = 1'b1;
-
+  end else if (instruction[31:21] == CMP_OP) begin //CMP <Xn>, <Xm>{, <shift> #<amount>}
+    ALUOp = 2'b01;
   end
 end
 
