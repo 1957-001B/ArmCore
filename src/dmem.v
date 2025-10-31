@@ -21,9 +21,9 @@ end
 
 always @(posedge clk) begin 
   if (MemRead) begin 
-    Read_d = d_mem[address[11:2]];
+    Read_d <= d_mem[address[11:2]];
   end else begin
-    Read_d = 64'b0;
+    Read_d <= 64'b0;
   end
 
 end

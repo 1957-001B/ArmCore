@@ -10,11 +10,10 @@ module cpu (
     output reg halted
   );
 
-// Will be set by the bootloader
 localparam INITPC =  64'h0;
 // localparam INITSP = 1000;
 
-// Instruction Memory
+// IMemory
 wire [31:0] instruction;
 
 // Sign Extend / Pad
@@ -35,11 +34,10 @@ wire RegWrite;
 wire UseSP;
 reg req_halt;
 
-// Data Memory
-wire [63:0] Read_mem_d;
-wire [63:0] Write_mem_d;
+// DMemory
+wire [63:0] dm_read;
 
-// Register File 
+// RegFile 
 wire [4:0] Read_register_1;
 wire [4:0] Read_register_2;
 
@@ -51,25 +49,21 @@ wire [4:0] Write_register;
 assign Write_register = instruction[4:0];
 
 wire [63:0] Write_d;
-wire [63:0] alu_result;
 
-assign Write_d = MemToReg ? alu_result : Read_mem_d;
+assign Write_d = MemToReg ? alu_result : dm_read;
 
 wire [63:0] Read_data_1;
 wire [63:0] Read_data_2;
 
 // APSR
 // wire N, Z, C, V;
+
 // Alu
+
 wire alu_zero;
-wire zero;
+wire [63:0] alu_result;
 
-wire [63:0] address;
-wire [63:0] A;
-wire [63:0] B;
-wire [63:0] result;
-
-wire mod_flags; //not sure if I will input flag branches
+// wire mod_flags; 
 wire [63:0] alu_mux;
 assign alu_mux = ALUSrc ? Read_data_2 : padded_imm;
 
@@ -97,18 +91,16 @@ control u_control (
 imem u_imem (
     .pc             (pc),
     // reads from PC
-    .instruction    (instruction),
-    // reads from memory the instruction 
-    .reset          (reset)
+    .instruction    (instruction)
 );
 
 dmem u_dmem (
     .clk         (clk),
-    .address     (address),
+    .address     (alu_result),
     .MemWrite    (MemWrite),
     .MemRead     (MemRead),
-    .Write_d     (Write_mem_d),
-    .Read_d      (Read_mem_d)
+    .Write_d     (Read_data_2),
+    .Read_d      (dm_read)
 );
 
 // probably outside the current scope of the project
@@ -122,11 +114,11 @@ dmem u_dmem (
 // );
 
 alu u_alu (
-    .zero      (zero),
-    .A         (A),
-    .B         (B),
+    .zero      (alu_zero),
+    .A         (Read_data_1),
+    .B         (alu_mux),
     .alu_op    (alu_op),
-    .result    (result)
+    .result    (alu_result)
 );
 
 alu_control u_alu_control (
@@ -153,8 +145,6 @@ reg_file u_reg_file (
     .Read_data_2        (Read_data_2)
 );
 
-
-
 //  PC logic
 wire [63:0] pc_norm, pc_jump, pc_mux;
 wire pc_select;
@@ -164,7 +154,7 @@ assign pc_jump = pc + (padded_imm << 2); // padded_imm LSL 2
 assign pc_select = UncondBranch | FlagBranch | (ZeroBranch & alu_zero); // If any branches then pc_mux is set to jump
 assign pc_mux = pc_select ? pc_jump : pc_norm;
 
-always @(posedge clk or posedge reset) begin
+always @(posedge clk) begin
     if (reset) begin
       // Reset signal driven by tb 
       pc <= INITPC;

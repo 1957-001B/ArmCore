@@ -4,8 +4,7 @@
 
 module imem (
 input wire [63:0] pc, // reads from PC
-output wire [31:0] instruction, // reads from memory the instruction 
-input reset
+output wire [31:0] instruction // reads from memory the instruction 
 );
   localparam MEMSIZE = 1024; // 1024 Instructions ~ 1024*4 = 4Kib
   localparam INSTRUCTION_N = 7;
