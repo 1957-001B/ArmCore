@@ -3,8 +3,11 @@
 `include "params.vh"
 
 module imem (
+/* verilator lint_off UNUSEDSIGNAL */
 input wire [63:0] pc, // reads from PC
-output wire [31:0] instruction // reads from memory the instruction 
+input wire clk,
+output reg [31:0] instruction // reads from memory the instruction 
+
 );
   localparam MEMSIZE = 1024; // 1024 Instructions ~ 1024*4 = 4Kib
   localparam INSTRUCTION_N = 7;
@@ -27,6 +30,8 @@ initial begin
 
   end
 
-  assign instruction = i_mem[pc[11:2]]; //right shifted twice to align with the 4 bit instuctions (i.e divide by 4)
+  always @(posedge clk) begin
+    instruction <= i_mem[pc[11:2]]; // right shifted twice to align with the 4 bit instuctions (i.e divide by 4)
+  end
 
 endmodule

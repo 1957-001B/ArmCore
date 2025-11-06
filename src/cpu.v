@@ -90,6 +90,7 @@ control u_control (
 );
 imem u_imem (
     .pc             (pc),
+    .clk (clk),
     // reads from PC
     .instruction    (instruction)
 );
