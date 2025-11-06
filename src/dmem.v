@@ -3,6 +3,7 @@
 `include "params.vh"
 module dmem (
     input clk,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [63:0] address,
     input wire MemWrite,
     input wire MemRead,

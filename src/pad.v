@@ -3,6 +3,7 @@
 `include "params.vh"
 
 module pad (
+  /* verilator lint_off UNUSEDSIGNAL */
   input wire [31:0] instruction,
   output reg [63:0] padded_imm
 );

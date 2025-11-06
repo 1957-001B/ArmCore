@@ -2,6 +2,7 @@
 `timescale 10ns/1ns
 `include "params.vh"
 module alu_control (
+  /* verilator lint_off UNUSEDSIGNAL */
     input [31:0] instruction,
     input [1:0] ALUOp, // ALU control will only send a signal when the ALUOp flag is set 
     output reg [3:0] alu_op

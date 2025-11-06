@@ -3,6 +3,7 @@
 `include "params.vh"
 
 module control (
+  /* verilator lint_off UNUSEDSIGNAL */
   input [31:0] instruction,  
 
   // Control Bits
