@@ -15,3 +15,5 @@ __pycache__
 a.out
 obj_dir/
 Graphical-Micro-Architecture-Simulator-main/
+*.gtkw
+netlist/
