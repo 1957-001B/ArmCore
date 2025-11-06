@@ -18,7 +18,7 @@ localparam OP_CPZ    = 4'b0111; // for CBZ.
 always @(*) begin
 case (alu_op) 
     OP_AND: result = A & B;
-    OP_ORR: result = A | B;
+    OP_ORR: result = 0 | B;
     OP_ADD: result = A+B;
     OP_SUB: result = A-B;
     OP_CPZ: result = B | 64'b0; // compare with B rather than A so we can cmp to a imm or a register rather than just a register

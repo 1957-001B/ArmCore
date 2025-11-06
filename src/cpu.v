@@ -50,7 +50,7 @@ assign Write_register = instruction[4:0];
 
 wire [63:0] Write_d;
 
-assign Write_d = MemToReg ? alu_result : dm_read;
+assign Write_d = MemToReg ? dm_read : alu_result  ;
 
 wire [63:0] Read_data_1;
 wire [63:0] Read_data_2;
