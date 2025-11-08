@@ -88,6 +88,7 @@ control u_control (
     .UseSP           (UseSP),
     .req_halt        (req_halt)
 );
+
 imem u_imem (
     .pc             (pc),
     .clk (clk),

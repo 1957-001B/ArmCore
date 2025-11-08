@@ -22,7 +22,6 @@ module control (
   output reg req_halt
 );
 
-// On init
 always @(*) begin 
 
   Reg2Loc = 1'b0;
