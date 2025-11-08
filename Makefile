@@ -1,2 +1,2 @@
 all:
-	./scripts/Verilate.sh
+	VIZ=0 ./scripts/verilate.sh

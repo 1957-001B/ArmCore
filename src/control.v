@@ -22,7 +22,6 @@ module control (
   output reg req_halt
 );
 
-// On init
 always @(*) begin 
 
   Reg2Loc = 1'b0;
@@ -49,6 +48,8 @@ end else if (instruction[31:24] == CBZ_OP) begin // CBZ CBZ <Xt>, <label>
     UncondBranch = 1'b1;
   end else if (instruction[31:23] == MOVZ_OP) begin //MOVZ <Xd>, #<imm>{, LSL #<shift>}
     RegWrite = 1'b1;
+    Reg2Loc = 1'b1;
+    ALUOp = 2'b10;
   end else if (instruction[31:23] == SUB_OP) begin //SUBI <Xd|SP>, <Xn|SP>, #<imm>{, <shift>}
     ALUOp = 2'b10;
     UseSP = 1'b1;

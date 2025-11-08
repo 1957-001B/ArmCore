@@ -10,7 +10,7 @@ output reg [31:0] instruction // reads from memory the instruction
 
 );
   localparam MEMSIZE = 1024; // 1024 Instructions ~ 1024*4 = 4Kib
-  localparam INSTRUCTION_N = 7;
+  localparam INSTRUCTION_N = 8;
   reg [31:0] i_mem[0:MEMSIZE-1];
 
 initial begin 
