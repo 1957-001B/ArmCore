@@ -4,9 +4,9 @@
 
 module apsr (
 
-    input [63:0] result,
-    input FlagWrite,
-    output reg N, Z, C,V
+    // input [63:0] result,
+    // input FlagWrite,
+    // output reg N, Z, C,V
 );
 /* Chanings the N Z C V flags requires implementing System registers 
 and using MRS for read and MSR for writing instrutions to system registers
