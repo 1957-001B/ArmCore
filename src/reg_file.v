@@ -36,9 +36,7 @@ end
 
 always @(posedge clk) begin 
   if (reset) begin 
-    for (int i = 0; i < 32; i++) begin
-      X[i] <= 64'b0;
-    end
+    X <= '{default: 64'b0};
   end else if (RegWrite) begin
     X[Write_register] <= Write_d;
 end
