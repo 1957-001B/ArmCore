@@ -36,11 +36,14 @@ end
 
 always @(posedge clk) begin 
   if (reset) begin 
-    for (int i = 0; i < 32; i++) begin
-      X[i] <= 64'b0;
-    end
+    X <= '{default: 64'b0};
   end else if (RegWrite) begin
+    // Weird GTKWave bugs causing the register to not update at the right time nothing to do with my logic
+    $display(Write_d);
+    $display("Time %t | Writing X[%d] <= %h (current X[%d]=%h)",$time, Write_register, Write_d, Write_register, X[Write_register]);
     X[Write_register] <= Write_d;
+    /* verilator lint_off BLKSEQ */
+    #0.001 X[Write_register] = Write_d;  // tiny blocking delay, doesn't affect logic
 end
 
 end

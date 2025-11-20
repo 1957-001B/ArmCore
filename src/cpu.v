@@ -50,7 +50,7 @@ assign Write_register = instruction[4:0];
 
 wire [63:0] Write_d;
 
-assign Write_d = MemToReg ? alu_result : dm_read;
+assign Write_d = MemToReg ? dm_read : alu_result;
 
 wire [63:0] Read_data_1;
 wire [63:0] Read_data_2;
@@ -88,10 +88,10 @@ control u_control (
     .UseSP           (UseSP),
     .req_halt        (req_halt)
 );
+
 imem u_imem (
     .pc             (pc),
     .clk (clk),
-    // reads from PC
     .instruction    (instruction)
 );
 
